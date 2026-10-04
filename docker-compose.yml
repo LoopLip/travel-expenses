@@ -1,0 +1,21 @@
+# PostgreSQL для разработки. Значения берутся из .env (см. .env.example) или используются по умолчанию.
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: travel-expenses-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-travel}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-travel_dev_password}
+      POSTGRES_DB: ${POSTGRES_DB:-travel_expenses}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-travel} -d ${POSTGRES_DB:-travel_expenses}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:
